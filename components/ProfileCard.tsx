@@ -62,7 +62,7 @@ export default function ProfileCard({ theme, setTheme, resolvedTheme }: ProfileC
 
   return (
     <section
-      className={`rounded-2xl pt-10 container max-w-sm sm:max-w-lg flex flex-col items-center z-10 shadow-lg tracking-tighter opacity-90 ${sectionClass}`}
+      className={`rounded-2xl pt-10 container -mt-10 sm:mt-0 scale-90 sm:scale-100 max-w-sm sm:max-w-lg flex flex-col items-center z-10 shadow-lg tracking-tighter opacity-90 ${sectionClass}`}
     >
       <Link
         href="https://jehian.me"
