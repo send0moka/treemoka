@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <!-- Preload critical resources -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  
+  <!-- Critical CSS inline untuk First Paint yang cepat -->
+  <style>
+    /* Critical CSS - Loading state */
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    
+    /* Loading spinner yang ringan */
+    .loading {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 40px;
+      height: 40px;
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid #3498db;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      0% { transform: translate(-50%, -50%) rotate(0deg); }
+      100% { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+    
+    /* Smooth scroll behavior */
+    html {
+      scroll-behavior: smooth;
+    }
+    
+    /* Hardware acceleration untuk animasi */
+    * {
+      -webkit-transform: translateZ(0);
+      transform: translateZ(0);
+    }
+  </style>
+  
+  <title>Links - Send0moka</title>
+  
+  <!-- Meta tags untuk SEO dan performance -->
+  <meta name="description" content="Super fast React static website dengan animasi smooth">
+  <meta name="robots" content="index,follow">
+  <meta name="theme-color" content="#000000">
+</head>
+<body>
+  <div id="root">
+    <!-- Loading state sementara JS load -->
+    <div class="loading"></div>
+  </div>
+  <script type="module" src="/src/main.jsx"></script>
+</body>
+</html>
