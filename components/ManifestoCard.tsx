@@ -1,21 +1,32 @@
 import Image from "next/image"
 import Link from "next/link"
 
+import { Alex_Brush } from "next/font/google"
+const alexBrush = Alex_Brush({
+  variable: "--font-alex-brush",
+  weight: "400",
+  subsets: ["latin"],
+});
+
 export type Theme = "dark" | "light" | "system"
 
 export interface ManifestoCardProps {
   theme: Theme
   setTheme: (t: Theme) => void
-  resolvedTheme?: "dark" | "light";
+  resolvedTheme?: "dark" | "light"
 }
 
-export default function ManifestoCard({ theme, setTheme, resolvedTheme }: ManifestoCardProps) {
+export default function ManifestoCard({
+  theme,
+  setTheme,
+  resolvedTheme,
+}: ManifestoCardProps) {
   // Theme classes
-  const isDark = (resolvedTheme ?? theme) === "dark";
+  const isDark = (resolvedTheme ?? theme) === "dark"
   const sectionClass = isDark
     ? "bg-[#111113] text-white"
     : "bg-[#e0dcf2] text-black"
-  const descClass = isDark ? "text-[#777b84]" : "text-[#80838d]"
+  const descClass = isDark ? "text-[#b0b4ba]" : "text-[#80838d]"
   const footerClass = isDark
     ? "bg-[#2b2839]/50 text-[#777b84]"
     : "bg-[#d2cfe3]/50 text-[#80838d]"
@@ -31,7 +42,7 @@ export default function ManifestoCard({ theme, setTheme, resolvedTheme }: Manife
 
   return (
     <section
-      className={`rounded-2xl pt-10 container max-w-lg flex flex-col items-center z-10 shadow-lg tracking-tighter opacity-90 ${sectionClass}`}
+      className={`rounded-2xl pt-10 container max-w-sm sm:max-w-lg flex flex-col items-center z-10 shadow-lg tracking-tighter opacity-90 ${sectionClass}`}
     >
       <Link
         href="https://jehian.me"
@@ -46,11 +57,22 @@ export default function ManifestoCard({ theme, setTheme, resolvedTheme }: Manife
           height={1080}
         />
       </Link>
-      <p className={`${descClass} max-w-xs mt-2 tracking-tight`}>
-        Di ranah Twitter/X, di mana kata-kata berlarian cepat seperti kilat, kita berkomitmen untuk menjadi sumber tawa dan senyuman. Kita percaya bahwa di balik hiruk-pikuk kehidupan sehari-hari, setiap orang membutuhkan sedikit canda (dan kesintingan) untuk meringankan langkah.
+      <p className={`${descClass} mt-6 px-8 tracking-tight`}>
+        Di ranah Twitter/X, di mana kata-kata berlarian cepat seperti kilat,
+        kita berkomitmen untuk menjadi sumber tawa dan senyuman. Kita percaya
+        bahwa di balik hiruk-pikuk kehidupan sehari-hari, setiap orang
+        membutuhkan sedikit <b>canda</b> (dan <b>kesintingan</b>) untuk
+        meringankan langkah.
       </p>
-      <p className={`${descClass} max-w-xs mt-2 tracking-tight`}>Whatever your idealism, remember this one: keep insane and stay sinting.</p>
-      
+      <p className={`${descClass} mt-3 px-8 tracking-tight`}>
+        Whatever your idealism, remember this one:{" "}
+        <b>keep insane and stay sinting</b>.
+      </p>
+      <p className={`${alexBrush.className} text-4xl -skew-12 px-10 mb-10 w-full`}>Treemoka</p>
+      <p className={`${descClass} mb-6 px-8 tracking-tight text-sm w-full`}>
+        Admin {" "}
+        <span className="text-[12px] text-[#777b84] font-base">@ Jehian&apos;s Linktree</span>.
+      </p>
       <footer
         className={`w-full rounded-b-2xl text-xs tracking-normal py-4 px-8 flex justify-between items-center ${footerClass}`}
       >

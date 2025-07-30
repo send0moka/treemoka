@@ -25,7 +25,7 @@ export default function Home() {
   }, [theme]);
 
   return (
-    <div className="min-h-screen w-full flex flex-col items-center mt-28 relative">
+    <div className="min-h-screen w-full flex flex-col items-center mt-14 sm:mt-28 relative">
       <NavLinks theme={resolvedTheme} showManifesto={showManifesto} setShowManifesto={setShowManifesto} />
       {showManifesto ? (
         <ManifestoCard theme={theme} setTheme={setTheme} resolvedTheme={resolvedTheme} />
