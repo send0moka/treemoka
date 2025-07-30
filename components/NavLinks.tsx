@@ -23,7 +23,7 @@ export default function NavLinks({ theme = "dark" }: NavLinksProps) {
 
   return (
     <nav
-      className={`fixed top-8 left-1/2 -translate-x-1/2 ${navClass} opacity-90 rounded-full p-1 flex items-center z-10 shadow-lg text-sm tracking-tight`}
+      className={`${navClass} opacity-90 rounded-full p-1 flex items-center z-10 shadow-lg text-sm tracking-tight -mt-32 mb-8`}
     >
       {links.map(({ href, label, px }) => {
         const isActive = pathname === href
