@@ -6,8 +6,6 @@ import GH from "@/components/GH"
 import Mail from "@/components/Mail"
 import Link from "next/link"
 
-import { useEffect } from "react"
-
 const SOCIAL_LINKS = [
   {
     href: "https://x.com/sendomoka",
@@ -36,21 +34,12 @@ export type Theme = "dark" | "light" | "system"
 export interface ProfileCardProps {
   theme: Theme
   setTheme: (t: Theme) => void
+  resolvedTheme?: "dark" | "light";
 }
 
-export default function ProfileCard({ theme, setTheme }: ProfileCardProps) {
-  useEffect(() => {
-    if (theme === "system") {
-      const mq = window.matchMedia("(prefers-color-scheme: dark)")
-      const handleChange = () => setTheme(mq.matches ? "dark" : "light")
-      handleChange()
-      mq.addEventListener("change", handleChange)
-      return () => mq.removeEventListener("change", handleChange)
-    }
-  }, [theme, setTheme])
-
+export default function ProfileCard({ theme, setTheme, resolvedTheme }: ProfileCardProps) {
   // Theme classes
-  const isDark = theme === "dark"
+  const isDark = (resolvedTheme ?? theme) === "dark";
   const sectionClass = isDark
     ? "bg-[#111113] text-white"
     : "bg-[#e0dcf2] text-black"
@@ -125,9 +114,8 @@ export default function ProfileCard({ theme, setTheme }: ProfileCardProps) {
         </p>
         <figure className="flex items-center">
           {(["dark", "system", "light"] as Theme[]).map((t, idx, arr) => (
-            <>
+            <span key={t} className="flex items-center">
               <button
-                key={t}
                 className={
                   buttonBase +
                   " " +
@@ -140,11 +128,9 @@ export default function ProfileCard({ theme, setTheme }: ProfileCardProps) {
                 {t.charAt(0).toUpperCase() + t.slice(1)}
               </button>
               {idx < arr.length - 1 && (
-                <span key={t + "-sep"} className="font-light opacity-50">
-                  /
-                </span>
+                <span className="font-light opacity-50">/</span>
               )}
-            </>
+            </span>
           ))}
         </figure>
       </footer>

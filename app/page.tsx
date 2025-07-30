@@ -9,22 +9,25 @@ import { useState, useEffect } from "react"
 
 export default function Home() {
   const [theme, setTheme] = useState<Theme>("system");
+  const [resolvedTheme, setResolvedTheme] = useState<"dark" | "light">("dark");
 
   // Sync with system theme if "system" is selected
   useEffect(() => {
     if (theme === "system") {
       const mq = window.matchMedia("(prefers-color-scheme: dark)");
-      const handleChange = () => setTheme(mq.matches ? "dark" : "light");
+      const handleChange = () => setResolvedTheme(mq.matches ? "dark" : "light");
       handleChange();
       mq.addEventListener("change", handleChange);
       return () => mq.removeEventListener("change", handleChange);
+    } else {
+      setResolvedTheme(theme);
     }
   }, [theme]);
 
   return (
     <>
-      <NavLinks theme={theme === "system" ? (typeof window !== "undefined" && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light") : theme} />
-      <ProfileCard theme={theme} setTheme={setTheme} />
+      <NavLinks theme={resolvedTheme} />
+      <ProfileCard theme={theme} setTheme={setTheme} resolvedTheme={resolvedTheme} />
       <ShaderGradientCanvas
         style={{
           position: "fixed",
