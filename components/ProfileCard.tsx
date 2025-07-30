@@ -66,13 +66,19 @@ export default function ProfileCard({ theme, setTheme, resolvedTheme }: ProfileC
     >
       <Link
         href="https://jehian.me"
-        className="hover:filter hover:brightness-125 transition-all duration-300"
         aria-label="Personal Website"
       >
         <Image
+          src="/tap.png"
+          alt="Tap to view more"
+          className="size-36 object-cover absolute ml-28 mt-7"
+          width={1080}
+          height={1080}
+        />
+        <Image
           src="/me.png"
           alt="Card Image"
-          className="size-32 rounded-full object-cover"
+          className="size-32 rounded-full object-cover hover:filter hover:brightness-125 transition-all duration-300"
           width={1080}
           height={1080}
         />

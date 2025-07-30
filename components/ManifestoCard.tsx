@@ -6,7 +6,7 @@ const alexBrush = Alex_Brush({
   variable: "--font-alex-brush",
   weight: "400",
   subsets: ["latin"],
-});
+})
 
 export type Theme = "dark" | "light" | "system"
 
@@ -46,13 +46,19 @@ export default function ManifestoCard({
     >
       <Link
         href="https://jehian.me"
-        className="hover:filter hover:brightness-125 transition-all duration-300"
         aria-label="Personal Website"
       >
         <Image
+          src="/tap.png"
+          alt="Tap to view more"
+          className="size-36 object-cover absolute ml-28 mt-7"
+          width={1080}
+          height={1080}
+        />
+        <Image
           src="/me.png"
           alt="Card Image"
-          className="size-32 rounded-full object-cover"
+          className="size-32 rounded-full object-cover hover:filter hover:brightness-125 transition-all duration-300"
           width={1080}
           height={1080}
         />
@@ -68,10 +74,17 @@ export default function ManifestoCard({
         Whatever your idealism, remember this one:{" "}
         <b>keep insane and stay sinting</b>.
       </p>
-      <p className={`${alexBrush.className} text-4xl -skew-12 px-10 mb-10 w-full`}>Treemoka</p>
+      <p
+        className={`${alexBrush.className} text-4xl -skew-12 px-10 mb-10 w-full`}
+      >
+        Treemoka
+      </p>
       <p className={`${descClass} mb-6 px-8 tracking-tight text-sm w-full`}>
-        Admin {" "}
-        <span className="text-[12px] text-[#777b84] font-base">@ Jehian&apos;s Linktree</span>.
+        Admin{" "}
+        <span className="text-[12px] text-[#777b84] font-base">
+          @ Jehian&apos;s Linktree
+        </span>
+        .
       </p>
       <footer
         className={`w-full rounded-b-2xl text-xs tracking-normal py-4 px-8 flex justify-between items-center ${footerClass}`}
