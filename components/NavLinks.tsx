@@ -1,14 +1,30 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 
-export default function NavLinks() {
+type NavLinksProps = {
+  theme?: "dark" | "light"
+}
+
+export default function NavLinks({ theme = "dark" }: NavLinksProps) {
   const pathname = usePathname()
   const links = [
     { href: "/", label: "Hello", px: "px-7" },
     { href: "/manifesto", label: "Manifesto", px: "px-4" },
   ]
+
+  // Theme classes
+  const navClass = theme === "light" ? "bg-[#fcfcfd]" : "bg-[#111113]"
+  const activeClass =
+    theme === "light" ? "bg-[#f0f0f3] text-black" : "bg-[#212225] text-white"
+  const inactiveClass =
+    theme === "light"
+      ? "text-[#b8babc] hover:text-[#76787b] font-medium"
+      : "text-[#545455] hover:text-[#959698] font-medium"
+
   return (
-    <nav className="fixed top-8 left-1/2 -translate-x-1/2 bg-[#111113] rounded-full p-1 flex items-center z-10 shadow-lg text-sm tracking-tight">
+    <nav
+      className={`fixed top-8 left-1/2 -translate-x-1/2 ${navClass} opacity-90 rounded-full p-1 flex items-center z-10 shadow-lg text-sm tracking-tight`}
+    >
       {links.map(({ href, label, px }) => {
         const isActive = pathname === href
         return (
@@ -17,9 +33,7 @@ export default function NavLinks() {
             href={href}
             className={
               `${px} py-1 rounded-full transition-colors ` +
-              (isActive
-                ? "bg-[#212225] text-white"
-                : "text-[#545455] hover:text-[#959698] font-semibold")
+              (isActive ? activeClass : inactiveClass)
             }
           >
             {label}

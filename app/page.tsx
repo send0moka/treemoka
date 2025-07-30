@@ -1,11 +1,30 @@
 "use client"
+
+
 import { ShaderGradientCanvas, ShaderGradient } from "@shadergradient/react"
 import NavLinks from "@/components/NavLinks"
+import ProfileCard, { Theme } from "@/components/ProfileCard"
+import { useState, useEffect } from "react"
+
 
 export default function Home() {
+  const [theme, setTheme] = useState<Theme>("system");
+
+  // Sync with system theme if "system" is selected
+  useEffect(() => {
+    if (theme === "system") {
+      const mq = window.matchMedia("(prefers-color-scheme: dark)");
+      const handleChange = () => setTheme(mq.matches ? "dark" : "light");
+      handleChange();
+      mq.addEventListener("change", handleChange);
+      return () => mq.removeEventListener("change", handleChange);
+    }
+  }, [theme]);
+
   return (
     <>
-      <NavLinks />
+      <NavLinks theme={theme === "system" ? (typeof window !== "undefined" && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light") : theme} />
+      <ProfileCard theme={theme} setTheme={setTheme} />
       <ShaderGradientCanvas
         style={{
           position: "fixed",
@@ -23,5 +42,5 @@ export default function Home() {
         />
       </ShaderGradientCanvas>
     </>
-  )
+  );
 }
