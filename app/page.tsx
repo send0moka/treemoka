@@ -1,16 +1,15 @@
 "use client"
 
-
 import { ShaderGradientCanvas, ShaderGradient } from "@shadergradient/react"
 import NavLinks from "@/components/NavLinks"
 import ProfileCard, { Theme } from "@/components/ProfileCard"
+import ManifestoCard from "@/components/ManifestoCard"
 import { useState, useEffect } from "react"
-
-
 
 export default function Home() {
   const [theme, setTheme] = useState<Theme>("system");
   const [resolvedTheme, setResolvedTheme] = useState<"dark" | "light">("dark");
+  const [showManifesto, setShowManifesto] = useState(false);
 
   // Sync with system theme if "system" is selected
   useEffect(() => {
@@ -26,9 +25,13 @@ export default function Home() {
   }, [theme]);
 
   return (
-    <div className="min-h-screen w-full flex flex-col items-center justify-center relative">
-      <NavLinks theme={resolvedTheme} />
-      <ProfileCard theme={theme} setTheme={setTheme} resolvedTheme={resolvedTheme} />
+    <div className="min-h-screen w-full flex flex-col items-center mt-28 relative">
+      <NavLinks theme={resolvedTheme} showManifesto={showManifesto} setShowManifesto={setShowManifesto} />
+      {showManifesto ? (
+        <ManifestoCard theme={theme} setTheme={setTheme} resolvedTheme={resolvedTheme} />
+      ) : (
+        <ProfileCard theme={theme} setTheme={setTheme} resolvedTheme={resolvedTheme} />
+      )}
       <ShaderGradientCanvas
         style={{
           position: "fixed",

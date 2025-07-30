@@ -1,15 +1,13 @@
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-
 type NavLinksProps = {
   theme?: "dark" | "light"
+  showManifesto?: boolean
+  setShowManifesto?: (show: boolean) => void
 }
 
-export default function NavLinks({ theme = "dark" }: NavLinksProps) {
-  const pathname = usePathname()
+export default function NavLinks({ theme = "dark", showManifesto, setShowManifesto }: NavLinksProps) {
   const links = [
-    { href: "/", label: "Hello", px: "px-7" },
-    { href: "/manifesto", label: "Manifesto", px: "px-4" },
+    { key: "hello", label: "Hello", px: "px-7" },
+    { key: "manifesto", label: "Manifesto", px: "px-4" },
   ]
 
   // Theme classes
@@ -23,22 +21,24 @@ export default function NavLinks({ theme = "dark" }: NavLinksProps) {
 
   return (
     <nav
-      className={`${navClass} opacity-90 rounded-full p-1 flex items-center z-10 shadow-lg text-sm tracking-tight -mt-32 mb-8`}
+      className={`${navClass} opacity-90 rounded-full p-1 flex items-center z-10 shadow-lg text-sm tracking-tight mb-8`}
     >
-      {links.map(({ href, label, px }) => {
-        const isActive = pathname === href
+      {links.map(({ key, label, px }) => {
+        const isActive = key === "manifesto" ? showManifesto : !showManifesto;
         return (
-          <Link
-            key={href}
-            href={href}
+          <button
+            key={key}
+            type="button"
             className={
-              `${px} py-1 rounded-full transition-colors ` +
+              `${px} py-1 cursor-pointer rounded-full transition-colors outline-none border-0 ` +
               (isActive ? activeClass : inactiveClass)
             }
+            onClick={() => setShowManifesto && setShowManifesto(key === "manifesto")}
+            tabIndex={0}
           >
             {label}
-          </Link>
-        )
+          </button>
+        );
       })}
     </nav>
   )
