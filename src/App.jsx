@@ -1,102 +1,184 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 
 function App() {
-  const [isLoaded, setIsLoaded] = useState(false)
-  const [count, setCount] = useState(0)
+  const canvasRef = useRef(null)
 
   useEffect(() => {
-    // Simulate component loaded
-    const timer = setTimeout(() => setIsLoaded(true), 100)
-    return () => clearTimeout(timer)
+    const canvas = canvasRef.current
+    if (!canvas) return
+
+    const ctx = canvas.getContext('2d')
+    let animationId
+
+    // Set canvas size properly
+    const resizeCanvas = () => {
+      const dpr = window.devicePixelRatio || 1
+      const rect = canvas.getBoundingClientRect()
+      
+      canvas.width = rect.width * dpr
+      canvas.height = rect.height * dpr
+      
+      ctx.scale(dpr, dpr)
+      canvas.style.width = rect.width + 'px'
+      canvas.style.height = rect.height + 'px'
+    }
+
+    // Initialize canvas size first
+    resizeCanvas()
+
+    // Animation parameters
+    let time = 0
+    const gridSize = 8
+    const points = []
+
+    // Create grid points
+    const createPoints = () => {
+      points.length = 0
+      for (let x = 0; x <= gridSize; x++) {
+        for (let y = 0; y <= gridSize; y++) {
+          points.push({
+            x: (x / gridSize) * canvas.offsetWidth,
+            y: (y / gridSize) * canvas.offsetHeight,
+            baseX: (x / gridSize) * canvas.offsetWidth,
+            baseY: (y / gridSize) * canvas.offsetHeight,
+            offsetX: (Math.random() - 0.5) * 100,
+            offsetY: (Math.random() - 0.5) * 100,
+            phase: Math.random() * Math.PI * 2
+          })
+        }
+      }
+    }
+
+    createPoints()
+
+    const animate = () => {
+      time += 0.01
+      
+      const width = canvas.offsetWidth
+      const height = canvas.offsetHeight
+      
+      ctx.clearRect(0, 0, width, height)
+
+      // Background gradient
+      const bgGradient = ctx.createLinearGradient(0, 0, width, height)
+      bgGradient.addColorStop(0, '#4429bc')
+      bgGradient.addColorStop(1, '#fcfbff')
+      ctx.fillStyle = bgGradient
+      ctx.fillRect(0, 0, width, height)
+
+      // Update points
+      points.forEach((point, index) => {
+        point.x = point.baseX + Math.sin(time + point.phase) * point.offsetX * 0.3
+        point.y = point.baseY + Math.cos(time * 0.8 + point.phase) * point.offsetY * 0.3
+      })
+
+      // Draw animated mesh
+      for (let x = 0; x < gridSize; x++) {
+        for (let y = 0; y < gridSize; y++) {
+          const i = x * (gridSize + 1) + y
+          
+          if (x < gridSize && y < gridSize) {
+            const p1 = points[i]
+            const p2 = points[i + 1]
+            const p3 = points[i + gridSize + 1]
+            const p4 = points[i + gridSize + 2]
+
+            if (p1 && p2 && p3 && p4) {
+              // Create gradient for this quad
+              const centerX = (p1.x + p2.x + p3.x + p4.x) / 4
+              const centerY = (p1.y + p2.y + p3.y + p4.y) / 4
+              
+              const gradient = ctx.createRadialGradient(
+                centerX, centerY, 0,
+                centerX, centerY, 100
+              )
+
+              const alpha = 0.1 + Math.sin(time + x + y) * 0.05
+              gradient.addColorStop(0, `rgba(168, 85, 247, ${alpha})`)
+              gradient.addColorStop(1, `rgba(68, 41, 188, ${alpha * 0.5})`)
+
+              ctx.fillStyle = gradient
+              ctx.beginPath()
+              ctx.moveTo(p1.x, p1.y)
+              ctx.bezierCurveTo(
+                p1.x + 20, p1.y,
+                p2.x - 20, p2.y,
+                p2.x, p2.y
+              )
+              ctx.bezierCurveTo(
+                p2.x, p2.y + 20,
+                p4.x, p4.y - 20,
+                p4.x, p4.y
+              )
+              ctx.bezierCurveTo(
+                p4.x - 20, p4.y,
+                p3.x + 20, p3.y,
+                p3.x, p3.y
+              )
+              ctx.bezierCurveTo(
+                p3.x, p3.y - 20,
+                p1.x, p1.y + 20,
+                p1.x, p1.y
+              )
+              ctx.closePath()
+              ctx.fill()
+            }
+          }
+        }
+      }
+
+      // Add floating orbs
+      for (let i = 0; i < 15; i++) {
+        const orbX = width * 0.5 + Math.sin(time * 0.5 + i) * width * 0.3
+        const orbY = height * 0.5 + Math.cos(time * 0.3 + i) * height * 0.3
+        const orbSize = 20 + Math.sin(time + i) * 10
+        const orbAlpha = 0.1 + Math.sin(time + i) * 0.05
+
+        const orbGradient = ctx.createRadialGradient(
+          orbX, orbY, 0,
+          orbX, orbY, orbSize
+        )
+        
+        orbGradient.addColorStop(0, `rgba(168, 85, 247, ${orbAlpha})`)
+        orbGradient.addColorStop(1, `rgba(168, 85, 247, 0)`)
+
+        ctx.fillStyle = orbGradient
+        ctx.beginPath()
+        ctx.arc(orbX, orbY, orbSize, 0, Math.PI * 2)
+        ctx.fill()
+      }
+
+      animationId = requestAnimationFrame(animate)
+    }
+
+    // Handle resize
+    const handleResize = () => {
+      resizeCanvas()
+      createPoints()
+    }
+
+    // Start animation
+    animate()
+
+    window.addEventListener('resize', handleResize)
+
+    return () => {
+      cancelAnimationFrame(animationId)
+      window.removeEventListener('resize', handleResize)
+    }
   }, [])
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-      {/* Header dengan animasi slide down */}
-      <header className={`py-6 px-4 ${isLoaded ? 'animate-slide-down' : 'opacity-0'}`}>
-        <nav className="flex items-center justify-between max-w-6xl mx-auto">
-          <div className="text-2xl font-bold text-indigo-600 hover-lift gpu-accelerated">
-            ⚡ FastReact
-          </div>
-          <div className="space-x-6">
-            <a href="#home" className="text-gray-700 hover:text-indigo-600 animate-smooth">Home</a>
-            <a href="#about" className="text-gray-700 hover:text-indigo-600 animate-smooth">About</a>
-            <a href="#contact" className="text-gray-700 hover:text-indigo-600 animate-smooth">Contact</a>
-          </div>
-        </nav>
-      </header>
-
-      {/* Hero Section */}
-      <main className="max-w-6xl px-4 py-16 mx-auto">
-        <section className={`text-center ${isLoaded ? 'animate-fade-in-up' : 'opacity-0'}`}>
-          <h1 className="mb-6 text-5xl font-bold text-gray-800 md:text-7xl animate-float">
-            Super Fast
-            <span className="block text-indigo-600 animate-pulse-soft">React Static</span>
-          </h1>
-          
-          <p className="max-w-2xl mx-auto mb-8 text-xl leading-relaxed text-gray-600">
-            Website statis dengan React dan Tailwind yang super cepat, animasi smooth, 
-            dan ringan tanpa overhead framework yang tidak perlu.
-          </p>
-
-          <div className="flex flex-col items-center justify-center gap-4 mb-12 sm:flex-row">
-            <button 
-              onClick={() => setCount(count + 1)}
-              className="px-8 py-3 font-semibold text-white transform bg-indigo-600 rounded-lg shadow-lg hover:bg-indigo-700 hover-lift animate-smooth gpu-accelerated hover:shadow-xl active:scale-95"
-            >
-              Click Me! ({count})
-            </button>
-            
-            <button className="px-8 py-3 font-semibold text-indigo-600 border-2 border-indigo-600 rounded-lg hover:bg-indigo-600 hover:text-white animate-smooth hover-lift gpu-accelerated">
-              Learn More
-            </button>
-          </div>
-
-          {/* Animated Cards */}
-          <div className="grid gap-8 mt-16 md:grid-cols-3">
-            {[
-              { title: "⚡ Super Fast", desc: "Build time minimal dengan Vite", delay: "0s" },
-              { title: "🎨 Smooth Animations", desc: "60fps dengan GPU acceleration", delay: "0.2s" },
-              { title: "📦 Lightweight", desc: "Bundle size yang sangat kecil", delay: "0.4s" }
-            ].map((card, index) => (
-              <div 
-                key={index}
-                className={`p-6 bg-white rounded-xl shadow-lg hover:shadow-xl 
-                           animate-smooth hover-lift gpu-accelerated
-                           ${isLoaded ? 'animate-scale-in' : 'opacity-0'}`}
-                style={{ animationDelay: card.delay }}
-              >
-                <h3 className="mb-3 text-2xl font-bold text-gray-800">{card.title}</h3>
-                <p className="text-gray-600">{card.desc}</p>
-              </div>
-            ))}
-          </div>
-
-          {/* Performance Stats */}
-          <div className={`mt-16 p-8 bg-white rounded-2xl shadow-lg ${isLoaded ? 'animate-bounce-soft' : 'opacity-0'}`}>
-            <h2 className="mb-6 text-3xl font-bold text-gray-800">Performance Metrics</h2>
-            <div className="grid gap-6 md:grid-cols-4">
-              {[
-                { label: "First Paint", value: "< 100ms", icon: "🎯" },
-                { label: "Bundle Size", value: "< 50KB", icon: "📦" },
-                { label: "Lighthouse", value: "100/100", icon: "🚀" },
-                { label: "Animation", value: "60 FPS", icon: "✨" }
-              ].map((stat, index) => (
-                <div key={index} className="text-center">
-                  <div className="mb-2 text-3xl animate-float">{stat.icon}</div>
-                  <div className="text-2xl font-bold text-indigo-600">{stat.value}</div>
-                  <div className="text-gray-600">{stat.label}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-      </main>
-
-      {/* Footer */}
-      <footer className={`mt-16 py-8 text-center text-gray-600 ${isLoaded ? 'animate-fade-in' : 'opacity-0'}`}>
-        <p>Built with React + Vite + Tailwind CSS | Deployed on Vercel</p>
-      </footer>
+    <div className="w-full h-screen overflow-hidden bg-gradient-to-br from-purple-700 to-purple-50">
+      <canvas
+        ref={canvasRef}
+        className="block w-full h-full"
+        style={{
+          width: '100vw',
+          height: '100vh',
+          display: 'block'
+        }}
+      />
     </div>
   )
 }
